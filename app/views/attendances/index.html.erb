@@ -2,7 +2,7 @@
 
 <h1>Attendances</h1>
 
-<table>
+<table class="table">
   <thead>
     <tr>
       <th>User</th>
@@ -15,7 +15,6 @@
   <tbody>
     <% @attendances.each do |attendance| %>
       <tr>
-        <td><%= attendance.user_id %></td>
         <td><%= attendance.time_in %></td>
         <td><%= attendance.time_out %></td>
         <td><%= link_to 'Show', attendance %></td>
@@ -28,4 +27,4 @@
 
 <br>
 
-<%= link_to 'New Attendance', new_attendance_path %>
+<%= link_to 'New Attendance', new_attendance_path, class: 'btn btn-primary' %>
