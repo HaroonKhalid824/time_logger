@@ -4,6 +4,7 @@ class CreateAttendances < ActiveRecord::Migration[6.0]
       t.bigint :user_id
       t.datetime :time_in
       t.datetime :time_out
+      t.string :status
 
       t.timestamps
     end

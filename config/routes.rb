@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
   resources :attendances
+  resources :attendances do
+    collection do
+      post 'clock_in'
+      post 'clock_out'
+    end
+  end
   devise_for :users
 
   root to: 'attendances#index'

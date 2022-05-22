@@ -1,13 +1,13 @@
 class AttendancesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_attendance, only: %i[ show edit update destroy ]
+  before_action :set_attendance, only: [:show, :edit, :update, :destroy]
 
-  # GET /attendances or /attendances.json
+  # GET /attendances
   def index
-    @attendances = Attendance.all
+    @attendances = current_user.attendances
   end
 
-  # GET /attendances/1 or /attendances/1.json
+  # GET /attendances/1
   def show
   end
 
@@ -20,52 +20,67 @@ class AttendancesController < ApplicationController
   def edit
   end
 
-  # POST /attendances or /attendances.json
+  # POST /attendances
   def create
     @attendance = Attendance.new(attendance_params)
 
-    respond_to do |format|
-      if @attendance.save
-        format.html { redirect_to attendance_url(@attendance), notice: "Attendance was successfully created." }
-        format.json { render :show, status: :created, location: @attendance }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @attendance.errors, status: :unprocessable_entity }
-      end
+    if @attendance.save
+      redirect_to @attendance, notice: 'Attendance was successfully created.'
+    else
+      render :new
     end
   end
 
-  # PATCH/PUT /attendances/1 or /attendances/1.json
+  # PATCH/PUT /attendances/1
   def update
-    respond_to do |format|
-      if @attendance.update(attendance_params)
-        format.html { redirect_to attendance_url(@attendance), notice: "Attendance was successfully updated." }
-        format.json { render :show, status: :ok, location: @attendance }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @attendance.errors, status: :unprocessable_entity }
-      end
+    if @attendance.update(attendance_params)
+      redirect_to @attendance, notice: 'Attendance was successfully updated.'
+    else
+      render :edit
     end
   end
 
-  # DELETE /attendances/1 or /attendances/1.json
+  # DELETE /attendances/1
   def destroy
     @attendance.destroy
+    redirect_to attendances_url, notice: 'Attendance was successfully destroyed.'
+  end
 
-    respond_to do |format|
-      format.html { redirect_to attendances_url, notice: "Attendance was successfully destroyed." }
-      format.json { head :no_content }
+  def clock_in
+    redirect_to attendances_url, alert: "Please clock out first." and return if last_attendance.present? && last_attendance.pending?
+
+    clock_in = current_user.attendances.new(time_in: Time.current)
+
+    if clock_in.save
+      redirect_to attendances_url, notice: "Attendance was successfully updated."
+    else
+      redirect_to attendances_url, alert: "Attendance was not successfully updated."
+    end
+  end
+
+  def clock_out
+    redirect_to attendances_url, alert: "Please clock in first." and return if !last_attendance.present? || (last_attendance.present? && last_attendance.marked?)
+
+    clock_out = current_user.attendances.last
+    if clock_out.update(time_out: Time.current)
+      redirect_to attendances_url, notice: "Attendance was successfully updated."
+    else
+      redirect_to attendances_url, alert: "Attendance was not successfully updated."
     end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
+    def last_attendance
+      current_user.attendances.last
+    end
+
     def set_attendance
       @attendance = Attendance.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
+    # Only allow a trusted parameter "white list" through.
     def attendance_params
-      params.require(:attendance).permit(:user_id, :time_in, :time_out)
+      params.require(:attendance).permit(:user_id, :time_in, :time_out, :status)
     end
 end

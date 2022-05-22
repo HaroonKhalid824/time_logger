@@ -1,14 +1,12 @@
-<p id="notice"><%= notice %></p>
-
 <h1>Attendances</h1>
 
 <table class="table">
   <thead>
     <tr>
-      <th>User</th>
       <th>Time in</th>
       <th>Time out</th>
-      <th colspan="3"></th>
+      <th>Status</th>
+      <th colspan="2"></th>
     </tr>
   </thead>
 
@@ -17,7 +15,9 @@
       <tr>
         <td><%= attendance.time_in %></td>
         <td><%= attendance.time_out %></td>
-        <td><%= link_to 'Show', attendance %></td>
+        <td>
+          <span class="badge <%= attendance.marked? ? 'bg-success' : 'bg-danger' %>"><%= attendance.status %></span>
+        </td>
         <td><%= link_to 'Edit', edit_attendance_path(attendance) %></td>
         <td><%= link_to 'Destroy', attendance, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
@@ -27,4 +27,7 @@
 
 <br>
 
-<%= link_to 'New Attendance', new_attendance_path, class: 'btn btn-primary' %>
+<%#= link_to 'New Attendance', new_attendance_path, class: 'btn btn-primary' %>
+
+<%= link_to 'Clock In', clock_in_attendances_path, class: 'btn btn-primary', method: :post %>
+<%= link_to 'Clock Out', clock_out_attendances_path, class: 'btn btn-primary', method: :post %>
