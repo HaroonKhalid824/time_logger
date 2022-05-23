@@ -25,9 +25,9 @@
   </tbody>
 </table>
 
-<br>
+<%= will_paginate @attendances %>
 
-<%#= link_to 'New Attendance', new_attendance_path, class: 'btn btn-primary' %>
+<br>
 
 <%= link_to 'Clock In', clock_in_attendances_path, class: 'btn btn-primary', method: :post %>
 <%= link_to 'Clock Out', clock_out_attendances_path, class: 'btn btn-primary', method: :post %>

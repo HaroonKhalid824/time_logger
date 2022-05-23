@@ -49,3 +49,4 @@ gem 'bootstrap', '~> 5.1.3'
 gem 'devise'
 gem 'enumerize'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'will_paginate'

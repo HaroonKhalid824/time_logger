@@ -6,7 +6,7 @@ class AttendancesController < ApplicationController
 
   # GET /attendances
   def index
-    @attendances = current_user.attendances
+    @attendances = current_user.attendances.paginate(page: params[:page], per_page: 5)
   end
 
   # GET /attendances/1
