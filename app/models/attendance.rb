@@ -21,11 +21,11 @@ class Attendance < ApplicationRecord
 
   validates :time_in, presence: true
 
-  after_update :mark_status, if: ->(obj) { obj.saved_changes.include?(:time_out) || obj.saved_changes.include?(:time_in) }
+  after_save :mark_complete, if: ->(obj) { obj.saved_changes.include?(:time_out) || obj.saved_changes.include?(:time_in) }
 
   private
 
-  def mark_status
+  def mark_complete
     update(status: :marked) if time_in.present? && time_out.present?
   end
 end
