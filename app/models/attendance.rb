@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: attendances
@@ -22,7 +24,8 @@ class Attendance < ApplicationRecord
   after_update :mark_status, if: ->(obj) { obj.saved_changes.include?(:time_out) || obj.saved_changes.include?(:time_in) }
 
   private
-    def mark_status
-      update(status: :marked) if time_in.present? && time_out.present?
-    end
+
+  def mark_status
+    update(status: :marked) if time_in.present? && time_out.present?
+  end
 end

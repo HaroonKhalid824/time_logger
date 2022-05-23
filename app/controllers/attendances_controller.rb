@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AttendancesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_attendance, only: [:show, :edit, :update, :destroy]
@@ -8,8 +10,7 @@ class AttendancesController < ApplicationController
   end
 
   # GET /attendances/1
-  def show
-  end
+  def show; end
 
   # GET /attendances/new
   def new
@@ -17,8 +18,7 @@ class AttendancesController < ApplicationController
   end
 
   # GET /attendances/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /attendances
   def create
@@ -47,40 +47,41 @@ class AttendancesController < ApplicationController
   end
 
   def clock_in
-    redirect_to attendances_url, alert: "Please clock out first." and return if last_attendance.present? && last_attendance.pending?
+    redirect_to attendances_url, alert: 'Please clock out first.' and return if last_attendance.present? && last_attendance.pending?
 
     clock_in = current_user.attendances.new(time_in: Time.current)
 
     if clock_in.save
-      redirect_to attendances_url, notice: "Attendance was successfully updated."
+      redirect_to attendances_url, notice: 'Attendance was successfully updated.'
     else
-      redirect_to attendances_url, alert: "Attendance was not successfully updated."
+      redirect_to attendances_url, alert: 'Attendance was not successfully updated.'
     end
   end
 
   def clock_out
-    redirect_to attendances_url, alert: "Please clock in first." and return if !last_attendance.present? || (last_attendance.present? && last_attendance.marked?)
+    redirect_to attendances_url, alert: 'Please clock in first.' and return if !last_attendance.present? || (last_attendance.present? && last_attendance.marked?)
 
     clock_out = current_user.attendances.last
     if clock_out.update(time_out: Time.current)
-      redirect_to attendances_url, notice: "Attendance was successfully updated."
+      redirect_to attendances_url, notice: 'Attendance was successfully updated.'
     else
-      redirect_to attendances_url, alert: "Attendance was not successfully updated."
+      redirect_to attendances_url, alert: 'Attendance was not successfully updated.'
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def last_attendance
-      current_user.attendances.last
-    end
 
-    def set_attendance
-      @attendance = Attendance.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def last_attendance
+    current_user.attendances.last
+  end
 
-    # Only allow a trusted parameter "white list" through.
-    def attendance_params
-      params.require(:attendance).permit(:user_id, :time_in, :time_out, :status)
-    end
+  def set_attendance
+    @attendance = Attendance.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def attendance_params
+    params.require(:attendance).permit(:user_id, :time_in, :time_out, :status)
+  end
 end
